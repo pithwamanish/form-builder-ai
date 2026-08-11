@@ -19,7 +19,7 @@ FormCraft AI empowers users to generate, refine, and publish dynamic web forms f
 ## 🔗 Live Demo & Project Credentials
 
 - **Live Application URL**: [https://form-builder-app-h1c9.onrender.com/](https://form-builder-app-h1c9.onrender.com/)
-- **Demo Mode**: Open Access (No authentication required).
+- **Demo Access / Credentials**: **Open Access (No Authentication Required)** — The application is configured for instant evaluation. Evaluators can access all features (Form Studio, Visual Builder, AI Schema Generator, Document Importer, Public Form Fill, Submissions Dashboard) directly without logging in.
 
 ---
 
