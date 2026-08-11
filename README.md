@@ -20,6 +20,10 @@ FormCraft AI empowers users to generate, refine, and publish dynamic web forms f
 
 - **Live Application URL**: [https://form-builder-app-h1c9.onrender.com/](https://form-builder-app-h1c9.onrender.com/)
 - **Demo Access Mode**: **Open Access (No Login Required)** — Pre-configured with zero setup required.
+- **📥 Sample Test Import Files**:
+  - 📄 **Word Document (.docx)**: [Download `sample_application.docx`](https://form-builder-app-h1c9.onrender.com/samples/sample_application.docx) | Repo Path: [`storage/samples/sample_application.docx`](storage/samples/sample_application.docx)
+  - 📊 **Excel Spreadsheet (.xlsx)**: [Download `sample_onboarding.xlsx`](https://form-builder-app-h1c9.onrender.com/samples/sample_onboarding.xlsx) | Repo Path: [`storage/samples/sample_onboarding.xlsx`](storage/samples/sample_onboarding.xlsx)
+  - 📑 **CSV Data File (.csv)**: [Download `sample_survey.csv`](https://form-builder-app-h1c9.onrender.com/samples/sample_survey.csv) | Repo Path: [`storage/samples/sample_survey.csv`](storage/samples/sample_survey.csv)
 - **Multi-Tenant Credentials & Contexts (Part D Differentiator)**:
   - **Default Workspace**: `tenant_id: default`
   - **Acme Corp Scope**: `tenant_id: acme_corp`
@@ -439,6 +443,14 @@ FormCraft AI implements a **Hybrid Import Pipeline** (`DocumentParserService`) f
 | **Phase 1: Deterministic Parsing** | `ZipArchive` (XML DOM), `PhpOffice\PhpSpreadsheet` | • Extracts exact document structure, paragraph text, and section headings.<br>• Extracts spreadsheet headers.<br>• Identifies required field indicators (`*`). | **Sub-10ms performance**, 0% LLM token cost, and 100% structural accuracy. |
 | **Phase 2: Semantic AI Inference** | Regex pattern matching & LLM Disambiguation | • Disambiguates vague labels into specific field types.<br>• Detects options for dropdowns/radios.<br>• Synthesizes validation rules. | Uses AI only where semantic context is needed, keeping LLM token costs minimal. |
 | **Phase 3: Unparseable Block Recovery** | Audit Log & Interactive Recovery Engine | • Detects embedded binary images or unreadable tables.<br>• Moves them to `unparseableBlocks` audit trail for one-click user recovery. | Prevents document data loss during import. |
+
+### 📥 Test Sample Files Committed in Repository
+
+Per Part C requirements, sample test files are committed in the repository under [`storage/samples/`](storage/samples/) and available for instant download on the live site:
+
+- 📄 **Word (.docx)**: [`storage/samples/sample_application.docx`](storage/samples/sample_application.docx) — [Download Live File](https://form-builder-app-h1c9.onrender.com/samples/sample_application.docx)
+- 📊 **Excel (.xlsx)**: [`storage/samples/sample_onboarding.xlsx`](storage/samples/sample_onboarding.xlsx) — [Download Live File](https://form-builder-app-h1c9.onrender.com/samples/sample_onboarding.xlsx)
+- 📑 **CSV (.csv)**: [`storage/samples/sample_survey.csv`](storage/samples/sample_survey.csv) — [Download Live File](https://form-builder-app-h1c9.onrender.com/samples/sample_survey.csv)
 
 ---
 
