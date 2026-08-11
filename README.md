@@ -32,6 +32,25 @@ FormCraft AI empowers users to generate, refine, and publish dynamic web forms f
 
 ---
 
+## 🎯 Technical Capabilities & Architecture Matrix
+
+| Core Platform Capability | FormCraft AI Technical Implementation | Key Artifact / Location |
+| :--- | :--- | :--- |
+| **PHP 8.2+ & Laravel 11 Architecture** | Strict type declarations (`declare(strict_types=1);`), modern Laravel 11 structure, clean migrations, seeders, and Artisan tinker commands. | `app/`, `bootstrap/app.php` |
+| **OOP & SOLID Architectural Design** | Contract Interfaces (`AiServiceInterface`, `StorageServiceInterface`, `DocumentParserInterface`) bound via Laravel IoC Container (`AppServiceProvider`). | `app/Contracts/`, `app/Providers/AppServiceProvider.php` |
+| **Secure REST APIs & Streaming** | Real-time Server-Sent Events (SSE) token streaming, `/api/health` diagnostics, streamed CSV export, and secure Cloudinary attachment routes. | `app/Http/Controllers/`, `routes/web.php` |
+| **MySQL Design & Indexing at Scale** | Single & composite production indexes (`uuid`, `slug`, `tenant_id`, `(tenant_id, is_published, updated_at)`), optimized pagination & foreign keys. | `database/migrations/`, `README.md` |
+| **Python AI / LLM Microservice** | Containerized Python 3.11 FastAPI service (`ai-service/`) utilizing `Instructor` (Pydantic type-safe schema) + `LiteLLM` multi-model routing. | `ai-service/main.py`, `ai-service/Dockerfile` |
+| **Dual-Tier AI Fallback Pipeline** | Dual-tier LLM engine (FastAPI Instructor Microservice $\rightarrow$ Laravel Prism SDK $\rightarrow$ Contextual Mock fallback) with JSON auto-repair. | `app/Services/AiFormService.php`, `config/ai.php` |
+| **Laravel Livewire 3 Components** | Reactive 2D Freeform Spatial Grid Canvas, natural language generator, document importer, and multi-step wizard renderer. | `app/Livewire/`, `resources/views/livewire/` |
+| **Queues & Asynchronous Processing** | Background queue jobs (`GenerateFormSchemaJob`, `ProcessDocumentImportJob`) with status polling & progress tracking. | `app/Jobs/`, `database/migrations/*_create_jobs_table.php` |
+| **Multi-Tenant SaaS Architecture** | Multi-tenant data isolation using global Eloquent ORM scoping (`TenantScope`, `BelongsToTenant`) and an interactive navbar context switcher. | `app/Scopes/TenantScope.php`, `app/Traits/BelongsToTenant.php` |
+| **Cloud Storage & Zero-Local Overhead** | Streamed uploads directly to Cloudinary (`FILESYSTEM_DISK=cloudinary`) with high-availability local fallback. | `app/Services/CloudinaryStorageService.php` |
+| **Docker Containerization** | Multi-container setup (app, webserver, DB, Redis, AI microservice) with permission pre-creation for zero-fail deployments. | `Dockerfile`, `docker-compose.yml`, `render.yaml` |
+| **Automated Testing Suite** | Comprehensive PHPUnit feature test suite validating schema creation, submissions, CSV export, AI generation, document parsing, & honeypot. | `tests/Feature/FormBuilderTest.php` (18 Passed) |
+
+---
+
 ## 🏛️ System Architecture & SDK AI Orchestration
 
 FormCraft AI features a decoupled microservice architecture designed for type-safe schema enforcement, universal model routing, and automatic multi-tier fallback resiliency:

@@ -56,3 +56,6 @@ Homestead.yaml
 *.swp
 *.swo
 *~
+
+# Submission Bundle
+submission_bundle/
