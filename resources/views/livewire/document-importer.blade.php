@@ -18,6 +18,24 @@
                             @error('documentFile') <span class="text-danger small">{{ $message }}</span> @enderror
                         </div>
 
+                        <!-- Sample Test Files Download Bar -->
+                        <div class="mb-3 p-3 bg-light rounded-3 border">
+                            <div class="d-flex align-items-center justify-content-between flex-wrap gap-2">
+                                <span class="small fw-bold text-dark"><i class="bi bi-download me-1 text-primary"></i> Download Sample Files to Test Parser:</span>
+                                <div class="d-flex gap-2 flex-wrap">
+                                    <a href="/samples/sample_application.docx" class="btn btn-sm btn-outline-primary fw-medium" download>
+                                        <i class="bi bi-file-earmark-word me-1"></i> Word (.docx)
+                                    </a>
+                                    <a href="/samples/sample_onboarding.xlsx" class="btn btn-sm btn-outline-success fw-medium" download>
+                                        <i class="bi bi-file-earmark-excel me-1"></i> Excel (.xlsx)
+                                    </a>
+                                    <a href="/samples/sample_survey.csv" class="btn btn-sm btn-outline-secondary fw-medium" download>
+                                        <i class="bi bi-file-earmark-text me-1"></i> CSV (.csv)
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+
                         <!-- Queued Background Import Mode for Large Files -->
                         <div class="p-3 mb-4 bg-light rounded-3 border">
                             <div class="form-check">
