@@ -10,7 +10,7 @@
 [![Cloudinary](https://img.shields.io/badge/Cloudinary-Cloud%20Storage-blue)](https://cloudinary.com)
 [![Docker](https://img.shields.io/badge/Docker-Compose-2496ED)](https://www.docker.com)
 
-FormCraft AI is a state-of-the-art, production-grade AI-powered Form Builder built with **Laravel 11 (Livewire 3)**, **Python FastAPI (Instructor + LiteLLM)**, **Prism SDK**, **Cloudinary Object Storage**, **MySQL**, and **Docker**. 
+FormCraft AI is a state-of-the-art, production-grade AI-powered Form Builder built with **Laravel 11 (Livewire 3)**, **Python FastAPI (Instructor + LiteLLM)**, **Prism SDK**, **Cloudinary Object Storage**, **MySQL**, and **Docker**.
 
 FormCraft AI empowers users to generate, refine, and publish dynamic web forms from natural language prompts, document uploads (`.docx` / `.xlsx`), or a **2D Freeform Spatial Grid Canvas** with diagonal multi-column and multi-row field resizing.
 
@@ -18,9 +18,8 @@ FormCraft AI empowers users to generate, refine, and publish dynamic web forms f
 
 ## 🔗 Live Demo & Project Credentials
 
-- **Live Application URL**: [https://formcraft-ai-production.up.railway.app](https://formcraft-ai-production.up.railway.app)
+- **Live Application URL**: [https://form-builder-app-h1c9.onrender.com/](https://form-builder-app-h1c9.onrender.com/)
 - **Demo Mode**: Open Access (No authentication required).
-- **Test Admin Account**: `admin@example.com` / `password123`
 
 ---
 
@@ -89,9 +88,103 @@ FormCraft AI features a **2D CSS Grid Layout Engine** (`grid-template-columns: r
 
 ---
 
+## 🗄️ MySQL Database Schema & High-Scale Indexing Strategy
+
+FormCraft AI utilizes a highly optimized MySQL schema designed for multi-tenant isolation, rapid form rendering, and high-concurrency submission ingestion.
+
+```
+                    ┌─────────────────────────┐
+                    │          forms          │
+                    ├─────────────────────────┤
+                    │ id (PK)                 │
+                    │ uuid (UNIQUE INDEX)     │
+                    │ tenant_id (INDEX)       │
+                    │ slug (UNIQUE INDEX)     │
+                    │ is_published (INDEX)    │
+                    │ (tenant, published, idx)│
+                    └────────────┬────────────┘
+                                 │ 1:N
+                                 ▼
+                    ┌─────────────────────────┐
+                    │    form_submissions     │
+                    ├─────────────────────────┤
+                    │ id (PK)                 │
+                    │ form_id (FK, INDEX)     │
+                    │ tenant_id (INDEX)       │
+                    │ uuid (UNIQUE INDEX)     │
+                    │ (form_id, created_at)   │
+                    │ (tenant, created_at)    │
+                    └─────────────────────────┘
+```
+
+### Table Schemas & Production Indexes
+
+#### 1. `forms`
+Stores form metadata, settings, and the canonical JSON schema definition.
+- **Indexes**:
+  - `PRIMARY KEY (id)`
+  - `UNIQUE INDEX forms_uuid_unique (uuid)`: Sub-millisecond lookup by public UUID for builder and fill routes.
+  - `UNIQUE INDEX forms_slug_unique (slug)`: Fast SEO-friendly URL resolution (`/f/{slug}`).
+  - `INDEX forms_tenant_id_index (tenant_id)`: Multi-tenant tenant scoping isolation.
+  - `INDEX forms_is_published_index (is_published)`: Quick status filtering.
+  - `COMPOSITE INDEX forms_tenant_published_updated_idx (tenant_id, is_published, updated_at DESC)`: Optimizes dashboard queries filtering published forms by tenant ordered by recent updates.
+
+#### 2. `form_submissions`
+Stores submission responses and uploaded Cloudinary attachment metadata.
+- **Indexes**:
+  - `PRIMARY KEY (id)`
+  - `UNIQUE INDEX form_submissions_uuid_unique (uuid)`: Secure file download verification.
+  - `INDEX form_submissions_form_id_foreign (form_id)`: Foreign key constraint for fast relation loading.
+  - `INDEX form_submissions_tenant_id_index (tenant_id)`: Tenant data boundary isolation.
+  - `COMPOSITE INDEX form_submissions_form_created_idx (form_id, created_at DESC)`: High-performance pagination for sub-second submission viewing.
+  - `COMPOSITE INDEX form_submissions_tenant_created_idx (tenant_id, created_at DESC)`: Tenant-wide analytics and CSV export streaming.
+
+#### 3. `ai_generation_logs`
+Tracks AI generation prompt tokens, completion tokens, latency, provider model tags, and execution status.
+- **Indexes**:
+  - `PRIMARY KEY (id)`
+  - `INDEX ai_generation_logs_form_id_index (form_id)`: Maps AI runs to target forms.
+  - `INDEX ai_generation_logs_tenant_id_index (tenant_id)`: Tenant usage metrics.
+  - `INDEX ai_generation_logs_status_index (status)`: Async polling monitor lookup (`pending` ➔ `processing` ➔ `completed`).
+  - `COMPOSITE INDEX ai_logs_tenant_status_created_idx (tenant_id, status, created_at DESC)`: Enables fast queue worker status checking.
+
+#### 4. `document_import_logs`
+Audits Word (`.docx`) and Excel (`.xlsx`/`.csv`) file import processing status and unparseable blocks.
+- **Indexes**:
+  - `PRIMARY KEY (id)`
+  - `INDEX document_import_logs_tenant_id_index (tenant_id)`
+  - `INDEX document_import_logs_status_index (status)`
+
+#### 5. `form_templates`
+Pre-seeded starter form schemas (`Contact Inquiry`, `Job Application`, `Event Registration`, `Customer Feedback`).
+- **Indexes**:
+  - `PRIMARY KEY (id)`
+  - `UNIQUE INDEX form_templates_slug_unique (slug)`
+  - `INDEX form_templates_category_index (category)`
+
+---
+
 ## 🧠 AI Prompting Strategy & Output Schema Contract
 
-FormCraft AI enforces a production-grade schema contract:
+FormCraft AI enforces a production-grade LLM prompting pipeline engineered for zero-hallucination structural outputs.
+
+### 1. System Prompt Strategy
+The system prompt establishes strict persona boundaries, forces valid JSON schema generation, and explicitly dictates allowed field types:
+
+```text
+You are an expert AI Form Builder Architect. Your job is to output a single, strictly valid JSON object representing a complete form schema based on the user prompt.
+
+RULES:
+1. Output ONLY a raw JSON object. Do not include markdown code fences, preambles, or conversational commentary.
+2. Every field must use one of the following exact types:
+   ["text", "textarea", "number", "email", "phone", "date", "time", "dropdown", "radio", "checkbox", "file", "heading", "rating"]
+3. Format section and field IDs with unique prefixes: "sec_1", "fld_1".
+4. Storage keys ('key') MUST be lowercase snake_case strings.
+5. Provide reasonable 'col_span' (1 to 12) and 'row_span' (1 to 6) grid layouts.
+```
+
+### 2. Output Schema Contract
+Every AI response MUST conform to the canonical JSON contract below:
 
 ```json
 {
@@ -127,9 +220,29 @@ FormCraft AI enforces a production-grade schema contract:
 }
 ```
 
-### Defensive Normalization & Auto-Repair Engine
-- **Type Normalization**: Maps hallucinated strings (e.g. `string` $\rightarrow$ `text`, `multiline` $\rightarrow$ `textarea`, `select` $\rightarrow$ `dropdown`, `upload` $\rightarrow$ `file`) to standard supported field types.
-- **JSON Repair**: Strips markdown code blocks (```json), repairs missing fields or syntax errors, and injects safe defaults so malformed JSON is **never** saved to MySQL.
+### 3. Handling Hallucinated Field Types
+When LLMs return non-standard field types, FormCraft AI applies a two-pass deterministic normalization resolver:
+
+| Hallucinated Type Return | Normalized Field Type |
+| :--- | :--- |
+| `string`, `short_text`, `input`, `textbox` | `text` |
+| `paragraph`, `long_text`, `multiline`, `notes` | `textarea` |
+| `select`, `select_box`, `combobox`, `list` | `dropdown` |
+| `choice`, `multiple_choice`, `single_choice` | `radio` |
+| `checkbox_group`, `multi_select`, `boolean` | `checkbox` |
+| `upload`, `attachment`, `document`, `image` | `file` |
+| `integer`, `float`, `currency`, `amount` | `number` |
+| `datetime`, `calendar` | `date` |
+| `star`, `score`, `feedback_rating` | `rating` |
+| *Unknown / Unrecognized string* | `text` *(Default Safety Fallback)* |
+
+### 4. Retries, Auto-Repair & Fallback Pipeline
+- **Truncated JSON Repair (`repairTruncatedJson`)**: Fixes missing closing brackets (`]`, `}`) or unclosed strings caused by max token cutoffs.
+- **Regex Sanitization (`repairSchema`)**: Strips control characters, trailing commas, and unescaped newlines.
+- **3-Tier Execution Fallback**:
+  1. **Tier 1 (FastAPI Microservice)**: Containerized Instructor Pydantic engine (`http://ai:8000`).
+  2. **Tier 2 (Laravel Prism SDK)**: Direct fallback call to Mistral AI / OpenAI via `echolabsdev/prism`.
+  3. **Tier 3 (Contextual Local Mock Generator)**: Guarantees zero-downtime execution even without active LLM API keys.
 
 ---
 
@@ -328,20 +441,20 @@ FormCraft AI implements a **Hybrid Import Pipeline** (`DocumentParserService`) f
 
 ```text
    PASS  Tests\Feature\FormBuilderTest
-  ✓ can create form and save json schema                                 0.57s  
-  ✓ can submit public form and record submission                         0.01s  
-  ✓ csv export endpoint returns streamed response                        0.06s  
-  ✓ uploaded file is downloadable from submissions endpoint              0.04s  
-  ✓ ai form service generates valid schema                               9.62s  
-  ✓ document parser service extracts fields                              0.19s  
-  ✓ template library seeds four templates                                0.05s  
-  ✓ honeypot traps bot submissions                                       0.17s  
-  ✓ can reorder fields and sections in builder                           0.07s  
-  ✓ can toggle display mode wizard vs single page                        0.05s  
-  ✓ can move fields between sections                                     0.10s  
-  ✓ per field validation rules are enforced                              0.13s  
-  ✓ can update field configuration and save form                         0.14s  
-  ✓ grid span saves and persists on form edit                            0.10s  
+  ✓ can create form and save json schema                                 0.57s
+  ✓ can submit public form and record submission                         0.01s
+  ✓ csv export endpoint returns streamed response                        0.06s
+  ✓ uploaded file is downloadable from submissions endpoint              0.04s
+  ✓ ai form service generates valid schema                               9.62s
+  ✓ document parser service extracts fields                              0.19s
+  ✓ template library seeds four templates                                0.05s
+  ✓ honeypot traps bot submissions                                       0.17s
+  ✓ can reorder fields and sections in builder                           0.07s
+  ✓ can toggle display mode wizard vs single page                        0.05s
+  ✓ can move fields between sections                                     0.10s
+  ✓ per field validation rules are enforced                              0.13s
+  ✓ can update field configuration and save form                         0.14s
+  ✓ grid span saves and persists on form edit                            0.10s
 
   Tests:    14 passed (36 assertions)
   Duration: 11.56s
