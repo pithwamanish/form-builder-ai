@@ -25,6 +25,14 @@ WORKDIR /var/www
 # Copy application source code
 COPY . /var/www
 
+# Ensure required storage and cache directories exist with permissions before composer discovery
+RUN mkdir -p storage/framework/views \
+             storage/framework/cache/data \
+             storage/framework/sessions \
+             storage/logs \
+             bootstrap/cache \
+    && chmod -R 777 storage bootstrap/cache
+
 # Install Composer dependencies
 RUN composer install --no-dev --optimize-autoloader --no-interaction --ignore-platform-req=php+
 
