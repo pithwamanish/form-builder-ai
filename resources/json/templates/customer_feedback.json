@@ -1,0 +1,48 @@
+{
+  "title": "Customer Feedback Survey",
+  "description": "We value your feedback! Help us improve our product.",
+  "settings": {
+    "display_mode": "single_page",
+    "layout_mode": "freeform"
+  },
+  "sections": [
+    {
+      "id": "sec_feedback",
+      "title": "Product Experience",
+      "fields": [
+        {
+          "id": "fld_rating",
+          "key": "satisfaction_rating",
+          "type": "rating",
+          "label": "Overall Satisfaction Rating (1 to 5 Stars)",
+          "required": true,
+          "col_span": 12,
+          "row_span": 1,
+          "valign": "center"
+        },
+        {
+          "id": "fld_recommend",
+          "key": "would_recommend",
+          "type": "radio",
+          "label": "Would you recommend us to a colleague?",
+          "options": ["Yes, absolutely", "Maybe", "No"],
+          "required": true,
+          "col_span": 12,
+          "row_span": 1,
+          "valign": "center"
+        },
+        {
+          "id": "fld_comments",
+          "key": "feedback_comments",
+          "type": "textarea",
+          "label": "Additional Comments or Suggestions",
+          "placeholder": "What did you like or what can we improve?",
+          "required": false,
+          "col_span": 12,
+          "row_span": 2,
+          "valign": "top"
+        }
+      ]
+    }
+  ]
+}

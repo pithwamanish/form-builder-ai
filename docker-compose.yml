@@ -1,0 +1,76 @@
+services:
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: form_builder_app
+    restart: unless-stopped
+    tty: true
+    environment:
+      SERVICE_NAME: app
+      SERVICE_TAGS: dev
+    working_dir: /var/www
+    volumes:
+      - .:/var/www
+    networks:
+      - form_builder_net
+
+  ai:
+    build:
+      context: ./ai-service
+      dockerfile: Dockerfile
+    container_name: form_builder_ai
+    restart: unless-stopped
+    env_file:
+      - .env
+    ports:
+      - "8001:8000"
+    networks:
+      - form_builder_net
+
+  webserver:
+    image: nginx:alpine
+    container_name: form_builder_web
+    restart: unless-stopped
+    tty: true
+    ports:
+      - "8000:80"
+    volumes:
+      - .:/var/www
+      - ./docker/nginx/conf.d/:/etc/nginx/conf.d/
+    networks:
+      - form_builder_net
+
+  db:
+    image: mysql:8.0
+    container_name: form_builder_db
+    restart: unless-stopped
+    tty: true
+    ports:
+      - "3307:3306"
+    environment:
+      MYSQL_DATABASE: form_builder
+      MYSQL_USER: form_user
+      MYSQL_PASSWORD: secret
+      MYSQL_ROOT_PASSWORD: secret
+    volumes:
+      - dbdata:/var/lib/mysql
+    networks:
+      - form_builder_net
+
+  redis:
+    image: redis:alpine
+    container_name: form_builder_redis
+    restart: unless-stopped
+    ports:
+      - "6379:6379"
+    networks:
+      - form_builder_net
+
+networks:
+  form_builder_net:
+    driver: bridge
+
+volumes:
+  dbdata:
+    driver: local

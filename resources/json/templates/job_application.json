@@ -1,0 +1,90 @@
+{
+  "title": "Job Application Form",
+  "description": "Please fill out all required fields to submit your job application.",
+  "settings": {
+    "display_mode": "single_page",
+    "layout_mode": "freeform"
+  },
+  "sections": [
+    {
+      "id": "sec_personal",
+      "title": "Personal Information",
+      "fields": [
+        {
+          "id": "fld_1",
+          "key": "full_name",
+          "type": "text",
+          "label": "Full Name",
+          "placeholder": "Jane Doe",
+          "required": true,
+          "col_span": 6,
+          "row_span": 1,
+          "valign": "center",
+          "validation": { "min": 2, "max": 100 }
+        },
+        {
+          "id": "fld_2",
+          "key": "email",
+          "type": "email",
+          "label": "Email Address",
+          "placeholder": "jane.doe@example.com",
+          "required": true,
+          "col_span": 6,
+          "row_span": 1,
+          "valign": "center",
+          "validation": { "email": true }
+        },
+        {
+          "id": "fld_3",
+          "key": "phone",
+          "type": "phone",
+          "label": "Phone Number",
+          "placeholder": "+1 (555) 123-4567",
+          "required": true,
+          "col_span": 6,
+          "row_span": 1,
+          "valign": "center"
+        }
+      ]
+    },
+    {
+      "id": "sec_experience",
+      "title": "Professional Background",
+      "fields": [
+        {
+          "id": "fld_4",
+          "key": "years_exp",
+          "type": "number",
+          "label": "Years of Experience",
+          "placeholder": "3",
+          "required": true,
+          "col_span": 6,
+          "row_span": 1,
+          "valign": "center",
+          "validation": { "min": 0, "max": 40 }
+        },
+        {
+          "id": "fld_5",
+          "key": "skills",
+          "type": "checkbox",
+          "label": "Technical Skills",
+          "options": ["PHP / Laravel", "JavaScript / React", "Python / AI", "MySQL / Redis"],
+          "required": true,
+          "col_span": 12,
+          "row_span": 2,
+          "valign": "center"
+        },
+        {
+          "id": "fld_6",
+          "key": "resume",
+          "type": "file",
+          "label": "Upload Resume (PDF/DOCX)",
+          "required": true,
+          "col_span": 12,
+          "row_span": 1,
+          "valign": "center"
+        }
+      ]
+    }
+  ]
+}

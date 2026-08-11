@@ -1,0 +1,128 @@
+services:
+  # 1. Laravel Web Application (PHP 8.2 + Nginx)
+  - type: web
+    name: form-builder-app
+    env: docker
+    dockerfilePath: ./Dockerfile
+    plan: free
+    region: singapore
+    healthCheckPath: /up
+    envVars:
+      - key: APP_NAME
+        value: "AI Form Builder"
+      - key: PORT
+        value: "8000"
+      - key: APP_ENV
+        value: production
+      - key: APP_DEBUG
+        value: "true"
+      - key: LOG_CHANNEL
+        value: stderr
+      - key: APP_KEY
+        value: "base64:Vf0HdO0a7ivAW8XKncHNoRa2cZmGow2g49gfsky/2E8="
+      - key: INTERNAL_API_SECRET
+        generateValue: true
+      - key: DB_CONNECTION
+        value: pgsql
+      - key: DATABASE_URL
+        fromDatabase:
+          name: form-builder-db
+          property: connectionString
+      - key: DB_HOST
+        fromDatabase:
+          name: form-builder-db
+          property: host
+      - key: DB_PORT
+        fromDatabase:
+          name: form-builder-db
+          property: port
+      - key: DB_DATABASE
+        fromDatabase:
+          name: form-builder-db
+          property: database
+      - key: DB_USERNAME
+        fromDatabase:
+          name: form-builder-db
+          property: user
+      - key: DB_PASSWORD
+        fromDatabase:
+          name: form-builder-db
+          property: password
+      - key: QUEUE_CONNECTION
+        value: sync
+      - key: CACHE_STORE
+        value: file
+      - key: SESSION_DRIVER
+        value: cookie
+      - key: REDIS_CLIENT
+        value: predis
+      - key: REDIS_HOST
+        fromService:
+          type: redis
+          name: form-builder-redis
+          property: host
+      - key: REDIS_PORT
+        fromService:
+          type: redis
+          name: form-builder-redis
+          property: port
+      - key: FASTAPI_AI_URL
+        fromService:
+          type: web
+          name: form-builder-ai
+          property: host
+      - key: AI_PROVIDER
+        value: mistral
+      - key: MISTRAL_API_KEY
+        sync: false
+      - key: MISTRAL_MODEL
+        value: mistral-small-latest
+      - key: OPENAI_API_KEY
+        sync: false
+      - key: CLOUDINARY_URL
+        sync: false
+      - key: CLOUDINARY_CLOUD_NAME
+        sync: false
+      - key: CLOUDINARY_API_KEY
+        sync: false
+      - key: CLOUDINARY_API_SECRET
+        sync: false
+
+  # 2. Python FastAPI AI Microservice (Instructor + LiteLLM)
+  - type: web
+    name: form-builder-ai
+    env: docker
+    dockerfilePath: ./ai-service/Dockerfile
+    dockerContext: ./ai-service
+    plan: free
+    region: singapore
+    envVars:
+      - key: MISTRAL_API_KEY
+        sync: false
+      - key: MISTRAL_MODEL
+        value: mistral-small-latest
+      - key: OPENAI_API_KEY
+        sync: false
+      - key: INTERNAL_API_SECRET
+        fromService:
+          type: web
+          name: form-builder-app
+          envVarKey: INTERNAL_API_SECRET
+
+  # 3. Redis Memory Cache & Queue
+  - type: redis
+    name: form-builder-redis
+    plan: free
+    region: singapore
+    maxmemoryPolicy: allkeys-lru
+    ipAllowList:
+      - source: 0.0.0.0/0
+        description: everywhere
+
+databases:
+  # 4. Managed MySQL 8 Database Instance
+  - name: form-builder-db
+    databaseName: form_builder
+    user: form_user
+    plan: free
+    region: singapore

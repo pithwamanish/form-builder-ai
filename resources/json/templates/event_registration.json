@@ -1,0 +1,49 @@
+{
+  "title": "Event Registration",
+  "description": "Register your spot for the upcoming Tech Summit.",
+  "settings": {
+    "display_mode": "single_page",
+    "layout_mode": "freeform"
+  },
+  "sections": [
+    {
+      "id": "sec_attendee",
+      "title": "Attendee Details",
+      "fields": [
+        {
+          "id": "fld_attendee_name",
+          "key": "attendee_name",
+          "type": "text",
+          "label": "Attendee Full Name",
+          "placeholder": "Alex Johnson",
+          "required": true,
+          "col_span": 6,
+          "row_span": 1,
+          "valign": "center"
+        },
+        {
+          "id": "fld_ticket_type",
+          "key": "ticket_type",
+          "type": "dropdown",
+          "label": "Ticket Type",
+          "options": ["General Admission (Free)", "VIP Access ($99)", "Student Pass ($25)"],
+          "required": true,
+          "col_span": 6,
+          "row_span": 1,
+          "valign": "center"
+        },
+        {
+          "id": "fld_session",
+          "key": "track_preference",
+          "type": "radio",
+          "label": "Preferred Breakout Session",
+          "options": ["Track A: Backend Scalability", "Track B: AI Integrations", "Track C: Modern Frontend"],
+          "required": true,
+          "col_span": 12,
+          "row_span": 1,
+          "valign": "center"
+        }
+      ]
+    }
+  ]
+}

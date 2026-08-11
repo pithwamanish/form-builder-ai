@@ -1,0 +1,57 @@
+# Laravel Core & Storage
+/vendor
+/node_modules
+/public/storage
+/public/hot
+/public/build
+/storage/*.key
+/storage/app/*
+!/storage/app/.gitignore
+!/storage/app/public/.gitignore
+/storage/framework/cache/*
+!/storage/framework/cache/.gitignore
+/storage/framework/sessions/*
+!/storage/framework/sessions/.gitignore
+/storage/framework/testing/*
+!/storage/framework/testing/.gitignore
+/storage/framework/views/*
+!/storage/framework/views/.gitignore
+/storage/logs/*
+!/storage/logs/.gitignore
+/bootstrap/cache/*.php
+!/bootstrap/cache/.gitignore
+
+# Environment & Secrets
+.env
+.env.backup
+.env.production
+
+# Python FastAPI Microservice
+__pycache__/
+*.py[cod]
+*$py.class
+ai-service/__pycache__/
+ai-service/*/__pycache__/
+.venv/
+venv/
+ENV/
+env/
+.pytest_cache/
+
+# Testing & Logs
+.phpunit.result.cache
+.pest.result.cache
+npm-debug.log
+yarn-error.log
+pnpm-debug.log*
+
+# IDE & OS Artifacts
+.DS_Store
+Thumbs.db
+Homestead.json
+Homestead.yaml
+/.idea
+/.vscode
+*.swp
+*.swo
+*~
