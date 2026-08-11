@@ -18,6 +18,7 @@
 !/storage/framework/views/.gitignore
 /storage/logs/*
 !/storage/logs/.gitignore
+!/storage/samples/*
 /bootstrap/cache/*.php
 !/bootstrap/cache/.gitignore
 
