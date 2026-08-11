@@ -1,0 +1,49 @@
+{
+  "title": "Untitled Dynamic Form",
+  "description": "Generated form workspace.",
+  "settings": {
+    "display_mode": "single_page",
+    "layout_mode": "freeform"
+  },
+  "sections": [
+    {
+      "id": "sec_general",
+      "title": "General Details",
+      "fields": [
+        {
+          "id": "fld_name",
+          "key": "full_name",
+          "type": "text",
+          "label": "Full Name",
+          "placeholder": "John Doe",
+          "required": true,
+          "col_span": 6,
+          "row_span": 1,
+          "valign": "center"
+        },
+        {
+          "id": "fld_email",
+          "key": "email_address",
+          "type": "email",
+          "label": "Email Address",
+          "placeholder": "john@example.com",
+          "required": true,
+          "col_span": 6,
+          "row_span": 1,
+          "valign": "center"
+        },
+        {
+          "id": "fld_notes",
+          "key": "additional_notes",
+          "type": "textarea",
+          "label": "Additional Notes",
+          "placeholder": "Enter details here...",
+          "required": false,
+          "col_span": 12,
+          "row_span": 2,
+          "valign": "top"
+        }
+      ]
+    }
+  ]
+}
