@@ -13,6 +13,12 @@ Route::get('/', function () {
     return redirect()->route('forms.index');
 });
 
+// Tenant Context Switcher Route (Part D Multi-Tenancy Demo)
+Route::get('/tenant/switch/{tenantId}', function (string $tenantId) {
+    session(['tenant_id' => $tenantId]);
+    return redirect()->back();
+})->name('tenant.switch');
+
 // All Saved Forms Dashboard
 Route::get('/forms', FormList::class)->name('forms.index');
 

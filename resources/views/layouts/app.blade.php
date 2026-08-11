@@ -89,6 +89,20 @@
                 @endif
 
                 <div class="d-flex align-items-center gap-2 ms-auto">
+                    <!-- Multi-Tenant Scope Switcher (Part D Differentiator) -->
+                    <div class="dropdown me-1">
+                        <button class="btn btn-sm btn-outline-secondary dropdown-toggle d-flex align-items-center gap-1 py-1 px-3 rounded-pill" type="button" data-bs-toggle="dropdown" aria-expanded="false" title="Switch Multi-Tenant Data Scope">
+                            <i class="bi bi-building text-primary"></i>
+                            <span class="small">Tenant: <strong class="text-dark">{{ session('tenant_id', 'default') }}</strong></span>
+                        </button>
+                        <ul class="dropdown-menu dropdown-menu-end shadow-sm">
+                            <li><h6 class="dropdown-header"><i class="bi bi-shield-lock me-1"></i> Multi-Tenant Scope Isolation</h6></li>
+                            <li><a class="dropdown-item {{ session('tenant_id', 'default') === 'default' ? 'active fw-bold' : '' }}" href="{{ route('tenant.switch', 'default') }}"><i class="bi bi-building-check me-2 text-primary"></i> Default Tenant (`default`)</a></li>
+                            <li><a class="dropdown-item {{ session('tenant_id') === 'acme_corp' ? 'active fw-bold' : '' }}" href="{{ route('tenant.switch', 'acme_corp') }}"><i class="bi bi-building-fill me-2 text-success"></i> Acme Corp (`acme_corp`)</a></li>
+                            <li><a class="dropdown-item {{ session('tenant_id') === 'globex_inc' ? 'active fw-bold' : '' }}" href="{{ route('tenant.switch', 'globex_inc') }}"><i class="bi bi-building-fill-gear me-2 text-purple"></i> Globex Inc (`globex_inc`)</a></li>
+                        </ul>
+                    </div>
+
                     <?php
                         $activeDb = 'unknown';
                         try {

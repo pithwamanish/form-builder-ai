@@ -19,7 +19,12 @@ FormCraft AI empowers users to generate, refine, and publish dynamic web forms f
 ## 🔗 Live Demo & Project Credentials
 
 - **Live Application URL**: [https://form-builder-app-h1c9.onrender.com/](https://form-builder-app-h1c9.onrender.com/)
-- **Demo Access / Credentials**: **Open Access (No Authentication Required)** — The application is configured for instant evaluation. Evaluators can access all features (Form Studio, Visual Builder, AI Schema Generator, Document Importer, Public Form Fill, Submissions Dashboard) directly without logging in.
+- **Demo Access Mode**: **Open Access (No Login Required)** — Pre-configured for instant evaluation with zero setup.
+- **Multi-Tenant Credentials & Contexts (Part D Differentiator)**:
+  - **Default Workspace**: `tenant_id: default`
+  - **Acme Corp Scope**: `tenant_id: acme_corp`
+  - **Globex Inc Scope**: `tenant_id: globex_inc`
+  - *Evaluators can switch multi-tenant data boundaries directly using the **Tenant Switcher** dropdown in the top navbar to verify strict Eloquent ORM tenant isolation (`TenantScope` / `BelongsToTenant`).*
 
 ---
 
