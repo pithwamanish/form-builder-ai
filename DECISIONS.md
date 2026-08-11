@@ -91,7 +91,7 @@ If granted two additional weeks of engineering time:
 
 1. **Conditional Visibility & Logic Branching Engine**:
    - Build a visual condition builder in the Inspector drawer (e.g., `"Show field_phone ONLY IF field_contact_method == 'Phone'"`).
-   - Evaluate conditional rules on the client-side via Alpine.js for instant field toggling without round-trip server requests.
+   - Calculate conditional rules on the client-side via Alpine.js for instant field toggling without round-trip server requests.
 
 2. **Analytics Dashboard & Conversion Funnel Heatmaps**:
    - Track form view counts, completion rates, average fill duration, and field-level drop-off rates.
